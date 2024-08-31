@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from .models import *
 from .forms import *
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
@@ -8,10 +9,12 @@ def home(request):
     posts = Post.objects.all()
     return render(request, 'main/home.html', {'posts': posts})
 
+@login_required(login_url='login')
 def post_details(request, pk):
     post = Post.objects.get(id=pk)
     return render(request, 'main/post-details.html', {'post': post})
 
+@login_required(login_url='login')
 def add_post(request):
     form = PostForm()
     if request.method == "POST":
@@ -21,6 +24,7 @@ def add_post(request):
             return redirect('/')
     return render(request, 'main/add-post.html', {'form': form})
 
+@login_required(login_url='login')
 def update_post(request, pk):
     post = Post.objects.get(id=pk)
     form = PostForm(instance=post)
@@ -31,6 +35,7 @@ def update_post(request, pk):
             return redirect('/')
     return render(request, 'main/update-post.html', {'form': form})
 
+@login_required(login_url='login')
 def delete_post(request, pk):
     post = Post.objects.get(id=pk)
     post.delete()
